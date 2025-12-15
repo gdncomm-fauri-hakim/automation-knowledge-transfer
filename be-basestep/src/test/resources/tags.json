@@ -1,0 +1,5 @@
+{
+  "@Run1": "(%s) and not (@NewFeature or @Excluded or @NeedMoreInvestigation or @Dependent or @Deprecated) and @Run1",
+  "@Run2": "(%s) and not (@NewFeature or @Excluded or @NeedMoreInvestigation or @Dependent or @Deprecated) and @Run2",
+  "@Run3": "(%s) and not (@NewFeature or @Excluded or @NeedMoreInvestigation or @Dependent or @Deprecated) and @Run3"
+}

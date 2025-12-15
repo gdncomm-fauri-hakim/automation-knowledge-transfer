@@ -1,0 +1,29 @@
+# Ignore build output
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Ignore IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore log files
+*.log
+
+# Ignore Serenity reports (optional - comment out if you want to keep them)
+# target/site/serenity/
+
+# Ignore test output
+test-output/
