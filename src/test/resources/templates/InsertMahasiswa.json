@@ -1,0 +1,6 @@
+{
+  "firstName": "{{firstName}}",
+  "lastName": "{{lastName}}",
+  "major": "{{major}}",
+  "nim": "{{nim}}"
+}
