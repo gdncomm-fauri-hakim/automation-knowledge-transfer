@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 @Component("com.gdn.qa.module.api.automation.test.data.AccountData")
 public class AccountData {
     private String userId;
+    private Boolean authorizedResponse;
     private LoginRequest loginRequest;
     private ResponseApi<GenerateTokenResponse> generateTokenResponse;
+    private ResponseApi<Boolean> authorizedAccount;
+    // Later add ResponseApi for create account API - Demo at Session
 }

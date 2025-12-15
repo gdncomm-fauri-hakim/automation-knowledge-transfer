@@ -17,12 +17,21 @@ public class AccountController extends ServiceApi {
     @Autowired
     private JsonApi jsonApi;
 
-    // Write code here for creating user API
+    // Write code here for creating user API - Demo at Session
 
     public ResponseApi<GenerateTokenResponse> generateToken(LoginRequest request) {
         Response response = service("demoqa")
                 .body(request)
                 .post("Account/v1/GenerateToken");
+        log.info("Response is {}", response.getBody().asPrettyString());
+        return jsonApi.fromJson(response, new TypeReference<>() {
+        });
+    }
+
+    public ResponseApi<Boolean> authorizedAccount(LoginRequest request) {
+        Response response = service("demoqa")
+                .body(request)
+                .post("Account/v1/Authorized");
         log.info("Response is {}", response.getBody().asPrettyString());
         return jsonApi.fromJson(response, new TypeReference<>() {
         });
