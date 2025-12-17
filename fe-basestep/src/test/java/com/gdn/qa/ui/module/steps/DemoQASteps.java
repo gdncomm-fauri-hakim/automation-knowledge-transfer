@@ -3,7 +3,7 @@ package com.gdn.qa.ui.module.steps;
 import com.gdn.qa.automation.core.context.StepDefinition;
 import com.gdn.qa.automation.core.ui.actor.ActorManager;
 import com.gdn.qa.automation.core.utils.helper.commands.CommandExecutor;
-import io.cucumber.java.en.When;
+import io.cucumber.java.en.Given;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -15,7 +15,7 @@ public class DemoQASteps {
     @Autowired
     private ActorManager actor;
 
-    @When("^(\\S+) using (\\S+) in (desktop|mobile) and logged (in|out) \"(\\S+)\" page$")
+    @Given("^(\\S+) using (\\S+) in (desktop|mobile) and logged (in|out) \\\"(\\S+)\\\" page$")
     public void userInBrowserAndLoggedInPage(
             String actorName,
             String application,
@@ -32,23 +32,19 @@ public class DemoQASteps {
         }
 
         this.actor.open(page);
+        
+        System.out.println("DEBUG: state received is '" + state + "'");
 
-        boolean loginState = new com.gdn.qa.ui.module.actions.LoginActions().isLoggedIn();
+        if ("in".equalsIgnoreCase(state)) {
+            java.util.Map<String, Object> credential = new java.util.HashMap<>();
+            credential.put("username",
+                    CommandExecutor.executeCommand("properties(default.username)"));
+            credential.put("password",
+                    CommandExecutor.executeCommand("properties(default.password)"));
 
-        if (state.equals("in")) {
-            if (!loginState) {
-                java.util.Map<String, Object> credential = new java.util.HashMap<>();
-                credential.put("username",
-                        CommandExecutor.executeCommand("properties(default.username)"));
-                credential.put("password",
-                        CommandExecutor.executeCommand("properties(default.password)"));
-                this.actor.doAction("log in to demoqa", credential);
-            }
-            actor.open(page);
+            this.actor.doAction("log in to demoqa", credential);
         } else {
-            if (loginState) {
-                this.actor.doAction("log out from demoqa");
-            }
+            this.actor.doAction("log out from demoqa");
         }
     }
 }

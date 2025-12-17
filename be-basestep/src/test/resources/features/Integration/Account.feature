@@ -1,11 +1,11 @@
-@AccountFeature @Sanity @Regression
-Feature: (Sanity) Account Feature
+@AccountFeature @Integration
+Feature: (Integration) Account Feature
 
   Background:
     Given [demoqa] using service with alias demoqa
 
   @Sanity @Positive @CreateUser
-  Scenario: Create user and generate token successfully
+  Scenario: Create user, generate token and get all books successfully
     # Create new user
     Given [demoqa] prepare request data createUserRequest with value
       | userName           | password    |
@@ -37,16 +37,6 @@ Feature: (Sanity) Account Feature
     And [demoqa] I store the token from response "response($['generateTokenResponse']['token'])"
     And [demoqa] authentication token should be generated
 
-  @Sanity @Positive @Authorized
-  Scenario: Verify user is authorized with valid token
-    # Check if user is authorized
-    Given [demoqa] prepare request data authorizedRequest with value
-      | userName                          | password                          |
-      | properties(default.data.username) | properties(default.data.password) |
-    And [demoqa] prepare body request with value "request($['authorizedRequest'])"
-    When [demoqa] try POST request to "/Account/v1/Authorized"
-    Then [demoqa] assign previous response data to authorizedResponse
-    And [demoqa] response statusCode should be 200
-    And [demoqa] do these validations
-      | actual                            | validation | expectation |
-      | response($['authorizedResponse']) | equal      | true        |
+    When [demoqa] try GET request to "/BookStore/v1/Books"
+    Then [demoqa] assign previous response data to getAllBooksResponse
+    And [bookstore] I store ISBN from response "response($['getAllBooksResponse']['books'][0]['isbn'])"

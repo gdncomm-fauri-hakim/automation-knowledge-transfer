@@ -3,8 +3,8 @@ package com.gdn.qa.ui.module.actions;
 import com.gdn.qa.automation.core.models.other.Action;
 import com.gdn.qa.automation.core.models.other.OnPage;
 import com.gdn.qa.automation.core.ui.tasks.executor.UserAction;
-import com.gdn.qa.automation.core.utils.helper.GlobalHelper;
 import com.gdn.qa.ui.module.pages.BooksPage;
+import com.gdn.qa.ui.module.pages.ProfilePage;
 import com.gdn.qa.ui.module.pages.LoginPage;
 import lombok.extern.log4j.Log4j2;
 import net.serenitybdd.screenplay.actions.Click;
@@ -18,44 +18,103 @@ import java.util.Map;
  * Actions for Login functionality
  */
 @Log4j2
-@OnPage({ LoginPage.class, BooksPage.class })
+@OnPage({ LoginPage.class, ProfilePage.class, BooksPage.class})
 public class LoginActions extends UserAction {
-
-    public boolean isLoggedIn() {
-        return getDriver() != null && !GlobalHelper.isBlank(getDriver().manage()
-                .getCookieNamed("userName"));
-    }
 
     @Action(value = "^log in to demoqa$", allowAnonymousCall = true)
     public void doLogin(Map<String, Object> credentials) throws Throwable {
-        Object username = credentials.getOrDefault("username", "");
-        username = username == null ? "" : username;
-        Object password = credentials.getOrDefault("password", "");
-        password = password == null ? "" : password;
+        if (!isLoggedIn()) {
+            Object username = credentials.getOrDefault("username", "");
+            username = username == null ? "" : username;
+            Object password = credentials.getOrDefault("password", "");
+            password = password == null ? "" : password;
 
-        log.info("Performing login with username: {}", username);
+            log.info("Performing login with username: {}", username);
 
-        user().attemptsTo(
-                WaitUntil.the(LoginPage.FIELD_INPUT_USERNAME,
-                        WebElementStateMatchers.isCurrentlyVisible()),
-                Type.theValue(username.toString()).into(LoginPage.FIELD_INPUT_USERNAME),
-                Type.theValue(password.toString()).into(LoginPage.FIELD_INPUT_PASSWORD),
-                Click.on(LoginPage.BUTTON_LOGIN));
+            // Wait for page to be ready and username field to be visible
+            user().attemptsTo(
+                    WaitUntil.the(LoginPage.FIELD_INPUT_USERNAME,
+                            WebElementStateMatchers.isCurrentlyVisible()));
+            // Fill in credentials
+            user().attemptsTo(
+                    Type.theValue(username.toString()).into(LoginPage.FIELD_INPUT_USERNAME),
+                    Type.theValue(password.toString()).into(LoginPage.FIELD_INPUT_PASSWORD));
+            
+            // Handle login button click with JavaScript fallback to avoid iframe interception
+            try {
+                // First try: Wait and scroll element into view
+                user().attemptsTo(
+                        WaitUntil.the(LoginPage.BUTTON_LOGIN,
+                                WebElementStateMatchers.isCurrentlyEnabled()));
+                
+                // Scroll button into view to avoid any overlay issues
+                ((org.openqa.selenium.JavascriptExecutor) getDriver()).executeScript(
+                        "arguments[0].scrollIntoView({block: 'center'});", 
+                        LoginPage.BUTTON_LOGIN.resolveFor(user()));
+                
+                Thread.sleep(500); // Brief wait after scroll
+                
+                // Try normal click first
+                user().attemptsTo(Click.on(LoginPage.BUTTON_LOGIN));
+                
+            } catch (Exception e) {
+                // Fallback: Use JavaScript click if normal click fails due to iframe
+                log.warn("Normal click failed, using JavaScript click. Error: {}", e.getMessage());
+                ((org.openqa.selenium.JavascriptExecutor) getDriver()).executeScript(
+                        "arguments[0].click();", 
+                        LoginPage.BUTTON_LOGIN.resolveFor(user()));
+            }
+        } else {
+            log.info("User is already logged in, skipping login");
+        }
     }
 
     @Action(value = "^log out from demoqa$", allowAnonymousCall = true)
     public void doLogout() throws Throwable {
-        log.info("Performing logout");
-        user().attemptsTo(
-                WaitUntil.the(BooksPage.BUTTON_LOGOUT,
-                        WebElementStateMatchers.isCurrentlyVisible()),
-                Click.on(BooksPage.BUTTON_LOGOUT));
+        if (isLoggedIn()) {
+            log.info("Performing logout");
+            try {
+                user().attemptsTo(
+                        WaitUntil.the(LoginPage.BUTTON_LOGOUT,
+                                WebElementStateMatchers.isCurrentlyVisible()),
+                        Click.on(LoginPage.BUTTON_LOGOUT));
+            } catch (Exception e) {
+                // Fallback: Use JavaScript click if normal click fails due to iframe
+                log.warn("Normal click failed, using JavaScript click. Error: {}", e.getMessage());
+                ((org.openqa.selenium.JavascriptExecutor) getDriver()).executeScript(
+                        "arguments[0].click();",
+                        LoginPage.BUTTON_LOGOUT.resolveFor(user()));
+            }
+        } else {
+            log.info("User is already logged out, skipping logout");
+        }
+    }
+
+    public boolean isLoggedIn() {
+        try {
+            // Ensure we have a driver and it's active  
+            if (getDriver() == null) {
+                log.warn("Driver is null, cannot check login status");
+                return false;
+            }
+            
+            // Check if userName cookie exists
+            return getDriver().manage().getCookieNamed("userName") != null;
+            
+        } catch (Exception e) {
+            log.warn("Error checking login status: {}", e.getMessage());
+            return false;
+        }
     }
 
     @Action(value = "^logged (in|out) demoqa$", allowAnonymousCall = true)
     public void isLogged(String state) throws Throwable {
         boolean expected = state.equalsIgnoreCase("in");
-        if (expected != isLoggedIn()) {
+        boolean actual = isLoggedIn();
+        
+        log.info("Checking if user is logged {}: Expected={}, Actual={}", state, expected, actual);
+        
+        if (expected != actual) {
             throw new Exception(user().getName() + " is not logged " + state + " demoqa");
         }
     }

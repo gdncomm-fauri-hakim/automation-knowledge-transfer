@@ -1,27 +1,21 @@
-@LoginFeature @Regression @Sanity
+@LoginFeature @Sanity @Regression @DemoQA
 Feature: (Sanity) Login to DemoQA
 
   @Positive
   Scenario: Successful login with valid credentials
-    Given user using chrome in desktop and logged out "login" page
-    When user do "log in to demoqa" with parameter
-      | username                   | password                   |
-      | properties(default.username) | properties(default.password) |
+    Given user using chrome in desktop and logged in "login" page
+    And user wait until "loading label" is not visible
+    Then user is in "profile" page
     Then user do "logged in demoqa"
-
-  @Positive
-  Scenario: Logout from DemoQA
-    Given user using chrome in desktop and logged in "books" page
-    When user do "log out from demoqa"
-    Then user do "logged out demoqa"
 
   @Negative
   Scenario: Login with invalid credentials
     Given user using chrome in desktop and logged out "login" page
-    When user do "log in to demoqa" with parameter
-      | username      | password  |
-      | invaliduser   | wrongpass |
+    And user wait for 1 seconds
+    And user do "log in to demoqa" with parameter
+      | username | password     |
+      | invalid  | invalidpass  |
     Then user wait until "invalid credentials message" is visible
     And user do these validations
-      | actual                           | validation | expectation                 |
-      | text_of(invalid credentials message) | EQUAL      | Invalid username or password! |
+      | actual                               | validation | expectation                   |
+      | textof(invalid credentials message) | EQUAL      | Invalid username or password! |

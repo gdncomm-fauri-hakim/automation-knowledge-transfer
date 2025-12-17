@@ -12,7 +12,7 @@
     <parent>
         <artifactId>badak-core-parent</artifactId>
         <groupId>com.gdn.qa.automation.core</groupId>
-        <version>3.9.27</version>
+        <version>3.9.22</version>
         <relativePath/>
     </parent>
 
@@ -56,101 +56,20 @@
         <dependency>
             <groupId>com.gdn.qa.automation.core</groupId>
             <artifactId>badak-base-steps</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.docker-java.docker-java</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-junit5</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber4</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber6</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber5</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber-archetype</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber4-archetype</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber4-screenplay-archetype</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.intellij</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.gdn.qa.automation.core</groupId>
             <artifactId>badak-base-steps</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.docker-java.docker-java</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-junit5</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber4</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber6</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber5</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber-archetype</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber4-archetype</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.serenity-bdd</groupId>
-                    <artifactId>serenity-cucumber4-screenplay-archetype</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.intellij</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
-            <groupId>net.serenity-bdd</groupId>
-            <artifactId>serenity-cucumber</artifactId>
-            <version>${serenity.cucumber.version}</version>
+            <groupId>com.gdn.qa.automation.core</groupId>
+            <artifactId>badak-utility</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gdn.qa.automation.core</groupId>
+            <artifactId>badak-core</artifactId>
         </dependency>
 
         <!--GDN Util-->

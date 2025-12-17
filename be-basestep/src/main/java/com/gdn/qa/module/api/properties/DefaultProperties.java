@@ -14,8 +14,4 @@ public class DefaultProperties {
     
     // DemoQA API base URL
     private String baseUrl;
-    
-    // Common test data
-    private String requestId;
-    private String channelId;
 }
